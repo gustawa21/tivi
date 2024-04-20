@@ -1,0 +1,27 @@
+﻿<Project>
+
+	<PropertyGroup>
+		<IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+		<IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+		<IlcTrimMetadata>false</IlcTrimMetadata>
+		<StaticallyLinked Condition="$(RuntimeIdentifier.StartsWith('win'))">true</StaticallyLinked>
+		<TrimMode>Link</TrimMode>
+		<TrimmerDefaultAction>link</TrimmerDefaultAction>
+		<PublishAot>true</PublishAot>
+		<ObjCopyName Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">aarch64-linux-gnu-objcopy</ObjCopyName>
+	</PropertyGroup>
+	
+	<ItemGroup Condition="'$(PublishAot)' == 'true' and '$(RuntimeIdentifier)' != 'win-arm64' and '$(RuntimeIdentifier)' != 'linux-arm64'">
+		<PackageReference Include="PublishAotCompressed" Version="0.0.4" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<!-- Do not generate partial metadata for types - always include all members even if they're unused -->
+		<IlcArg Include="--completetypemetadata" />
+		<!-- Generate extra data to make stack traces nicer -->
+		<IlcArg Include="--stacktracedata" />
+
+		<RdXmlFile Include="rd.xml" />
+	</ItemGroup>
+
+</Project>
